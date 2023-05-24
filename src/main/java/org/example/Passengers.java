@@ -42,4 +42,5 @@ public class Passengers {
     public void setAccountStatus(AccountStatus accountStatus) {
         this.accountStatus = accountStatus;
     }
+
 }

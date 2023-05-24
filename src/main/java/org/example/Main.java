@@ -127,5 +127,56 @@ public class Main {
             e.printStackTrace();
         }
 
+        Scanner userInput = new Scanner(System.in);
+        boolean keepRunning = true;
+
+        while (keepRunning){
+            System.out.println("\n Please select an option");
+            System.out.println("1.Search Passengers");
+
+            int userChoice = userInput.nextInt();
+            switch (userChoice){
+                case 1:
+                    System.out.println("Enter Passenger ID:");
+                    int passengerId = userInput.nextInt();
+                    Passengers p = passenger.get(passengerId);
+                    if(p != null)
+                        System.out.println(p);
+                    else
+                        System.out.println("No passenger found with ID " + passengerId);
+                    break;
+                    case 2:
+                    System.out.println("Enter Passenger ID:");
+                    int passengerId02 = userInput.nextInt();
+                    Passengers p2 = passenger.get(passengerId02);
+
+                    if (p2 != null) {
+                        // Assuming that the passengerId is the same as entityId in events
+                        // And only one event is associated with each passenger
+                        Events e = events.get(passengerId02);
+
+                        if (e != null) {
+                            LocalDateTime paymentRequiredTime = e.getPaymentRequiredTime();
+                            LocalDateTime paymentMadeTime = e.getPaymentMadeTime();
+
+                            AccountState state;
+                            if (paymentMadeTime == null) {
+                                state = new CancelledState();
+                            } else if (paymentMadeTime.isBefore(paymentRequiredTime)) {
+                                state = new InDebtState();
+                            } else {
+                                state = new GoodStandingState();
+                            }
+
+                            System.out.println(state.getStatusMessage());
+                        } else {
+                            System.out.println("No events found for Passenger ID " + passengerId02);
+                        }
+                    } else {
+                        System.out.println("No passenger found with ID " + passengerId02);
+                    }
+                    break;
+            }
+        }
     }
 }
