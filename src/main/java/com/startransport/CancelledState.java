@@ -1,4 +1,7 @@
 package com.startransport;
+import com.startransport.entities.Passenger;
+import com.startransport.entities.Trip;
+
 import java.util.ArrayList;
 
 public class CancelledState implements AccountState {
@@ -8,6 +11,8 @@ public class CancelledState implements AccountState {
     public String getStatusMessage() {
         return "This account is cancelled";
     }
+
+
 
     @Override
     public double getTotalPayable(Passenger passenger) {

@@ -1,26 +1,29 @@
-package com.startransport;
+package com.startransport.entities;
+
+import com.startransport.observers.TripObserver;
 
 import java.time.LocalDateTime;
-public class Trip {
-    public Trip(int passengerId, String tripId, LocalDateTime timeStart, LocalDateTime timeEnd, String vehicleId, String vehicleStartLocation, String vehicleEndLocation) {
-        this.passengerId = passengerId;
-        this.tripId = tripId;
-        this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
-        this.vehicleId = vehicleId;
-     //   this.vehicleStartLocation = vehicleStartLocation;
-     //   this.vehicleEndLocation = vehicleEndLocation;
-    }
+import java.util.ArrayList;
 
-    private int passengerId;
+public class Trip {
+    private String passengerId;
     private String tripId;
     private LocalDateTime timeStart;
     private LocalDateTime timeEnd;
     private String vehicleId;
-    //  private String accountStatus;
-    private String vehicleStartLocation;
-    private String vehicleEndLocation;
+    private ArrayList<TripObserver> observers = new ArrayList<>();
+
+
     private boolean isOngoing;
+    public Trip(String tripId,String passengerId, String vehicleId) {
+
+        this.tripId = tripId;
+        this.passengerId = passengerId;
+        this.vehicleId = vehicleId;
+
+    }
+
+
 
     public boolean isPaid() {
         return isPaid;
@@ -52,11 +55,11 @@ public class Trip {
 
     private double currentFair; // -> If the trip is ongoing this represents the trip fair upto the current bus stop.
 
-    public int getPassengerId() {
+    public String getPassengerId() {
         return passengerId;
     }
 
-    public void setPassengerId(int passengerId) {
+    public void setPassengerId(String passengerId) {
         this.passengerId = passengerId;
     }
 
@@ -82,6 +85,7 @@ public class Trip {
 
     public void setTimeEnd(LocalDateTime timeEnd) {
         this.timeEnd = timeEnd;
+        this.notifyAllTripObservers();
     }
 
     public String getVehicleId() {
@@ -92,21 +96,18 @@ public class Trip {
         this.vehicleId = vehicleId;
     }
 
-    public String getVehicleStartLocation() {
-        return vehicleStartLocation;
+    public void attachObserver(TripObserver observer){
+        this.observers.add(observer);
+    }
+    public void notifyAllTripObservers(){
+        for (TripObserver o: observers){
+            o.updateCurrentTrip();
+
+        }
     }
 
-    public void setVehicleStartLocation(String vehicleStartLocation) {
-        this.vehicleStartLocation = vehicleStartLocation;
-    }
 
-    public String getVehicleEndLocation() {
-        return vehicleEndLocation;
-    }
 
-    public void setVehicleEndLocation(String vehicleEndLocation) {
-        this.vehicleEndLocation = vehicleEndLocation;
-    }
 
 
 

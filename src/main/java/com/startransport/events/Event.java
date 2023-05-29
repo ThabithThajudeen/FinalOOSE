@@ -7,6 +7,12 @@ import com.startransport.OnboardState;
 import java.time.LocalDateTime;
 
 public abstract class Event {
+    private LocalDateTime eventTime;
+    private String eventId;
+    public Event(String eventId) {
+        this.eventId = eventId;
+        this.eventTime = LocalDateTime.now();
+    }
     public String getEventId() {
         return eventId;
     }
@@ -15,25 +21,4 @@ public abstract class Event {
         this.eventId = eventId;
     }
 
-
-
-
-    private String eventId;
-
-    public Event(String eventId, LocalDateTime eventTime) {
-        this.eventId = eventId;
-        this.eventTime = eventTime;
-    }
-
-    private LocalDateTime eventTime;
-
-
-
-
-
-
-    abstract void update(Event event);
-
-    // Getters and setters
-    //...
 }

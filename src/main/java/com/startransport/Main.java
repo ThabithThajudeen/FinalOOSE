@@ -1,237 +1,210 @@
 package com.startransport;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.startransport.entities.Bus;
 import com.startransport.entities.Passenger;
-import com.startransport.events.Event;
+import com.startransport.entities.Train;
+import com.startransport.entities.Trip;
+import com.startransport.errors.UnknownEventException;
+import com.startransport.events.*;
+//import com.startransport.events.BusPassedBusStop;
+import com.startransport.factories.EventFactory;
+import com.startransport.observers.BusObserver;
+import com.startransport.observers.TrainObserver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.time.format.DateTimeFormatter;
 
 public class Main {
-    public static void main(String[] args) {
-        Map<Integer, Passenger> passengers = new HashMap<>();
-       // Map<Integer, Bus> buses = new HashMap<>();
-       // Map<Integer, Trains> trains = new HashMap<>();
-        Map<String,Trip> trips = new HashMap<>();
-        Map<Integer, Event> events = new HashMap<>();
+    private static final String TRIP_ID_PREFIX = "T-";
+    private static final String TRAIN_ID_PREFIX = "TRAIN-";
+    private static final String BUS_ID_PREFIX = "BUS-";
+    private static final String PASSENGER_ID_PREFIX = "PASSENGER-";
+    private static final String EVENT_ID_PREFIX = "EVENT-";
+    private static int tripIdCount = 1;
+    private static int eventIdCount = 1;
+    private static int busStopPassed = 1;
+    private static int trainStopPassed = 1;
+
+    private static int busCount = 1;
+    private static int trainCount = 1;
+
+    static private EventFactory eventFactory = new EventFactory();
+    private static Map<String, Passenger> passengers = new HashMap<>();
+    private static Map<String, Bus> buses = new HashMap<>();
+    private static Map<String, Train> trains = new HashMap<>();
+    private static Map<String, Trip> trips = new HashMap<>();
+    private static Map<String, Event> events = new HashMap<>();
+
+    public static void main(String[] args) throws UnknownEventException {
+        System.out.println("hii");
 
         try {
-            Scanner scanner = new Scanner(new File("Passenger.csv"));
+            InputStream inputStream = Main.class.getResourceAsStream("/Passengers.csv");
+            Scanner scanner = new Scanner(new InputStreamReader(inputStream));
+
             scanner.nextLine();
             while (scanner.hasNextLine()) {
                 String[] data = scanner.nextLine().split(",");
 
+                // Assuming the first field is passengerID and the second field is name
+                String passengerID = data[0];
+                String passengerName = data[1];
 
-                //String name = data[0];
-                int passengerID = Integer.parseInt(data[0]);
-                String name = data[1];
+                // Create a new passenger with the read ID and name
+                Passenger passenger1 = new Passenger(passengerID, passengerName);
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-                LocalDateTime paymentRequiredTime = data[2].isEmpty() ? null : LocalDateTime.parse(data[4], formatter);
-                LocalDateTime paymentMadeTime = data[3].isEmpty() ? null : LocalDateTime.parse(data[5], formatter);
-
-                org.example.Passenger passenger1 = new org.example.Passenger(passengerID,name,paymentRequiredTime,paymentMadeTime);
-
+                // Store the new passenger in the map using passengerID as the key
                 passengers.put(passengerID, passenger1);
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
+
         try {
-            Scanner scanner = new Scanner(new File("buses.csv"));
+            InputStream inputStream = Main.class.getResourceAsStream("/buses.csv");
+            Scanner scanner = new Scanner(new InputStreamReader(inputStream));
+
             scanner.nextLine();
             while (scanner.hasNextLine()) {
                 String[] data = scanner.nextLine().split(",");
-                //int id = Integer.parseInt(data[0]);
-                //boolean onTime = Boolean.parseBoolean(data[1]);
-                //double latitude = Double.parseDouble(data[2]);
-                //double longitude = Double.parseDouble(data[3]);
 
-                int busID = Integer.parseInt(data[0]);
-                String status = data[1];
-               // Bus.Status accountStatus = Bus.Status.valueOf(data[2].toUpperCase());
-                double latitude = Double.parseDouble(data[2]);
-                double longitude = Double.parseDouble(data[3]);
+                // Assuming the first field is busID and the second field is passengerID
+                String busID = data[0];
+                String passengerID = data[1];
 
-                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-                LocalTime plannedArrivalTime = LocalTime.parse(data[4], timeFormatter);
-                LocalTime actualArrivalTime = LocalTime.parse(data[5], timeFormatter);
-                Bus bus = new Bus(busID, Bus.Status.valueOf(status),latitude,longitude,plannedArrivalTime,actualArrivalTime);
+                // Create a new bus with the read bus ID
+                Bus bus = new Bus(busID);
+
+                // If the bus already exists in the map, get it
+                if (buses.containsKey(busID)) {
+                    bus = buses.get(busID);
+                }
+                // Add the passenger to the bus
+                if (passengers.containsKey(passengerID)) {
+                    Passenger passenger = passengers.get(passengerID);
+
+                }
+                // Store the new bus in the map using busID as the key
                 buses.put(busID, bus);
             }
-
-        } catch (FileNotFoundException e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
+
         try {
-            Scanner scanner = new Scanner(new File("trains.csv"));
+            InputStream inputStream = Main.class.getResourceAsStream("/trains.csv");
+            Scanner scanner = new Scanner(new InputStreamReader(inputStream));
+
             scanner.nextLine();
             while (scanner.hasNextLine()) {
                 String[] data = scanner.nextLine().split(",");
-                //int id = Integer.parseInt(data[0]);
-                //boolean onTime = Boolean.parseBoolean(data[1]);
-                //double latitude = Double.parseDouble(data[2]);
-                //double longitude = Double.parseDouble(data[3]);
 
-                int TrainID = Integer.parseInt(data[0]);
-                Trains.Status accountStatus = Trains.Status.valueOf(data[2].toUpperCase());
-                double latitude = Double.parseDouble(data[2]);
-                double longitude = Double.parseDouble(data[3]);
+                // Assuming the first field is trainID, the second field is passengerID, and the third field is status
+                String trainID = data[0];
+                String passengerID = data[1];
+                String status = data[2];
 
+                // Create a new train with the read train ID and status
+                Train train = new Train(trainID, status);
 
-
-                Trains trains1 = new Trains(TrainID, accountStatus, latitude, longitude);
-                trains.put(TrainID, trains1);
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            Scanner scanner = new Scanner(new File("events.csv"));
-            scanner.nextLine();
-            LocalDateTime previousEventTime = null; // Track the previous event time
-            while (scanner.hasNextLine()) {
-                String[] data = scanner.nextLine().split(",");
-                String eventId = data[0];
-                String eventType = data[1];
-                String entityId = data[2];
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                LocalDateTime eventTime ;
-                if (previousEventTime != null) {
-                    // Calculate the event time assuming 2 minutes after the previous event time
-                    eventTime = previousEventTime.plusMinutes(2);
-                } else {
-                    // Use the first event time as is
-                    eventTime = LocalDateTime.parse(data[3], formatter);
+                // If the train already exists in the map, get it
+                if (trains.containsKey(trainID)) {
+                    train = trains.get(trainID);
                 }
 
-                LocalDateTime paymentRequiredTime = data[4].isEmpty() ? null : LocalDateTime.parse(data[4], formatter);
-                LocalDateTime paymentMadeTime = data[5].isEmpty() ? null : LocalDateTime.parse(data[5], formatter);
-                LocalDateTime scheduledArrivalTime = data[6].isEmpty() ? null : LocalDateTime.parse(data[6],formatter);
+                // Add the passenger to the train
+//                if (passengers.containsKey(passengerID)) {
+//                    Passenger passenger = passengers.get(passengerID);
+//                    train.addPassenger(passenger);
+//                }
 
-                Events event = new Events(eventId, eventType, entityId, eventTime, paymentRequiredTime, paymentMadeTime,scheduledArrivalTime);
-                events.put(eventId,event);
+                // Store the new train in the map using trainID as the key
+                trains.put(trainID, train);
             }
-        } catch (FileNotFoundException e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
+
+
         try {
-            Scanner scanner = new Scanner(new File("trips.csv"));
-            scanner.nextLine();
-            while (scanner.hasNextLine()) {
-                String[] data = scanner.nextLine().split(",");
-                int passengerId = Integer.parseInt(data[0]);
-                String tripId = data[1];
+            InputStream inputStream = Main.class.getResourceAsStream("/events.json");
+            JsonParser jsonParser = new JsonParser();
+            JsonElement e = jsonParser.parse(new InputStreamReader(inputStream));
+            JsonArray array = e.getAsJsonArray();
+            System.out.println("String" + array.size());
+            for (int i = 0; i < array.size(); i++) {
 
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                LocalDateTime dateTimeStart = LocalDateTime.parse(data[3], formatter);
-                LocalDateTime dateTimeEnd = data[4].isEmpty() ? null : LocalDateTime.parse(data[4], formatter);
-                String vehicleId = data[5];
-                String vehicleStartLocation = data[6];
-                String vehicleEndLocation = data[7];
-                org.example.Trip trip1 = new org.example.Trip(passengerId, tripId, dateTimeStart, dateTimeEnd, vehicleId, vehicleStartLocation,vehicleEndLocation);
-                trips.put(tripId,trip1);
-                org.example.Passenger x = passengers.get(passengerId) ;
-                if (x==null)
-                {
-                    // TODO -> change into proper error classes
-                    throw new RuntimeException("Passenger is null for the trip");
+                Event event = eventFactory.getEvent(array.get(i).getAsJsonObject());
+                if (event instanceof TripStartedEvent) {
+                    TripStartedEvent e1 = (TripStartedEvent) event;
+                    Passenger passenger = passengers.get(e1.getPassengerId());
+                    Trip trip = new Trip(TRIP_ID_PREFIX + (tripIdCount++), e1.getPassengerId(), "v1");
+                    passenger.setCurrentTrip(trip);
+                    trips.put(trip.getTripId(), trip);
+                    trip.attachObserver(passenger);
+
+                } else if (event instanceof TripStoppedEvent) {
+                    TripStoppedEvent e1 = (TripStoppedEvent) event;
+                    Passenger passenger = passengers.get(e1.getPassengerId());
+                    Trip trip = passenger.getCurrentTrip();
+                    trip.setTimeEnd(LocalDateTime.now());
+                    trip.setOngoing(false);
                 }
-                x.addToPastTrips(trip1);
-
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        Scanner userInput = new Scanner(System.in);
-        boolean keepRunning = true;
-
-        while (keepRunning){
-            System.out.println("\n Please select an option");
-            System.out.println("1.Search Passenger");
-            System.out.println("2.Weather(for instance)passengers's accounts are in good standing,in debt,or cancelled ");
-            System.out.println("3.Weather a passengers is currently on board a particular bus/train or not");
-            System.out.println("4.The exact times pssengers swipe their credit card(or other card) to enter/leave a bus or train ");
-            System.out.println("5.Weather certain buses and trains are on-time,delayed,or cancelled");
-            System.out.println("6.The physical location of buses and trains within the transport network");
-
-
-
-            int userChoice = userInput.nextInt();
-            switch (userChoice){
-                case 1:
-                    System.out.println("Enter Passenger ID:");
-                    int passengerId = userInput.nextInt();
-                    org.example.Passenger p = passengers.get(passengerId);
-                    if(p != null)
-                        System.out.println(p);
-                    else
-                        System.out.println("No passengers found with ID " + passengerId);
-                    break;
-                case 2:
-                    System.out.println("Enter Passenger ID:");
-                    int passengerId02 = userInput.nextInt();
-                    org.example.Passenger p2 = passengers.get(passengerId02);
-                    if(p2 != null) {
-                        System.out.println(p2);
-                        System.out.println("Passenger account status: " + p2.getAccountStatus());
-                    }
-                    else
-                        System.out.println("No passengers found with ID " + passengerId02);
-                    break;
-                case 3:
-                    System.out.println("Enter Passenger ID:");
-                    int passengerId03 = userInput.nextInt();
-                    org.example.Passenger p3 = passengers.get(passengerId03);
-                    if(p3 != null) {
-                        System.out.println("Passenger onboard status: " + p3.getOnboardStatus());
-                        String vehicleId = p3.getCurrentVehicle();
-                        if (vehicleId != null)
-                            System.out.println("Currently on vehicle: " + vehicleId);
-                    }
-                    else
-                        System.out.println("No passengers found with ID " + passengerId03);
-                    break;
-                case 4:
-                    System.out.println("Enter Passenger ID:");
-                    int passengerId04 = userInput.nextInt();
-                    Events event = events.get(passengerId04);
-                    if (event != null) {
-                        LocalDateTime eventTime = event.getEventTime();
-                        EventType eventType = event.getEventType();
-
-                        switch (eventType) {
-                            case CUSTOMER_ARRIVAL:
-                                System.out.println("Swipe-in event at: " + eventTime);
-                                break;
-                            case CUSTOMER_LEFT:
-                                System.out.println("Swipe-out event at: " + eventTime);
-                                LocalDateTime paymentRequiredTime = event.getPaymentRequiredTime();
-                                LocalDateTime paymentMadeTime = event.getPaymentMadeTime();
-                                if (paymentRequiredTime != null && paymentMadeTime != null) {
-                                    Duration tripDuration = Duration.between(paymentRequiredTime, paymentMadeTime);
-                                    System.out.println("Trip duration: " + tripDuration.toMinutes() + " minutes");
-                                }
-                                break;
-                            default:
-                                System.out.println("Invalid event type");
-                                break;
+                if (event instanceof VehiclePassedStop) {
+                    {
+                        VehiclePassedStop v1 = (VehiclePassedStop) event;
+                        Passenger passenger = passengers.get(v1.getPassengerID());
+                        if (v1.getVehicleType().equals("bus")) {
+                            Bus bus = buses.get(BUS_ID_PREFIX + (busStopPassed++) + v1.getPassengerID());
+                            if (bus != null) {
+                                passenger.setCurrentBusStop(bus);
+                                bus.attachObserver((BusObserver) passenger);
+                            } else {
+                                System.out.println("Bus not found");
+                            }
+                        } else if (v1.getVehicleType().equals("train")) {
+                            Train train = trains.get(TRAIN_ID_PREFIX + (trainStopPassed++) + v1.getPassengerID());
+                            if (train != null) {
+                                passenger.setCurrentTrainStop(train);
+                                train.attachObserver((TrainObserver) passenger);
+                            } else {
+                                System.out.println("Train not found");
+                            }
                         }
-                    } else {
-                        System.out.println("No event found for passengers with ID " + passengerId04);
+                        if (event instanceof VehicleCount) {
+                            VehicleCount vc1 = (VehicleCount) event;
+                            Passenger passenger1 = passengers.get(v1.getPassengerID());
+                            if (v1.getVehicleType().equals("bus")) {
+                                Bus bus = buses.get(BUS_ID_PREFIX + (busCount++) + vc1.getPassengerId());
+                                if (bus != null) {
+                                    passenger.setCurrentBusCount(bus);
+                                    bus.attachObserver((BusObserver) passenger1);
+                                } else ((vc1.getVehicleType().equals("train")) {
+                                    Train train = trains.get(TRAIN_ID_PREFIX + (trainCount++) + vc1.getPassengerId());
+                                    if (train != null) {
+                                        passenger1.setCurrentTrainCount(train);
+                                        train.attachObserver((TrainObserver) passenger1);
+                                    } else {
+                                        System.out.println("Train not found");
+                                    }
+                                }
+                            }
+
+                        }
                     }
-                    break;
+
+
+                }
 
             }
-        }
-    }
-}

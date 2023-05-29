@@ -1,8 +1,8 @@
 package com.startransport;
 
-import org.example.Commuter;
+//import org.example.Commuter;
 
-public class OnboardState implements CommuterState {
+public abstract class OnboardState implements CommuterState {
 
     @Override
     public void handleState(Commuter commuter) {
@@ -10,5 +10,6 @@ public class OnboardState implements CommuterState {
     }
 
 
+    public abstract String getStatusMessage();
 }
 

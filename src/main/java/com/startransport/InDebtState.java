@@ -1,5 +1,6 @@
 package com.startransport;
 import com.startransport.entities.Passenger;
+import com.startransport.entities.Trip;
 
 import java.util.ArrayList;
 

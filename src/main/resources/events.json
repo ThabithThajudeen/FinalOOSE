@@ -1,0 +1,29 @@
+[
+  {
+    "EventID": "E1",
+    "EventType": "TRIP_STARTED",
+    "PassengerID": "1",
+    "VehicleType" : "BUS",
+    "VehicleID" : "123"
+  },
+  {
+    "EventID": "E2",
+    "EventType": "TRIP_STOPPED",
+    "PassengerID": "1"
+  },
+  {
+    "EventID" : "E3",
+    "EventType" : "VEHICLE_PASSED_STOP",
+    "VehicleType" : "BUS",
+    "VehicleID" : "456"
+  },
+  {
+    "EventID" : "E4",
+    "EventType" : "VEHICLE_COUNT",
+    "VehicleType" : "BUS",
+    "VehicleID" : "123"
+  }
+
+
+
+]
