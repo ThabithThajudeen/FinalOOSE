@@ -18,10 +18,14 @@
     "VehicleID" : "456"
   },
   {
-    "EventID" : "E4",
-    "EventType" : "VEHICLE_COUNT",
-    "VehicleType" : "BUS",
-    "VehicleID" : "123"
+   "EventID" : "E4",
+    "EventType" : "VEHICLE_ARRIVAL",
+    "VehicleType": "BUS"
+  },
+  {
+    "EventID" : "E5",
+    "EventType" : "VEHICLE_LEFT",
+    "VehicleType" : "BUS"
   }
 
 

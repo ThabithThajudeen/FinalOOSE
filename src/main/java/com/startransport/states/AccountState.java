@@ -1,4 +1,4 @@
-package com.startransport;
+package com.startransport.states;
 
 import com.startransport.entities.Passenger;
 

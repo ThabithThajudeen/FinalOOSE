@@ -5,6 +5,7 @@ import java.util.List;
 
 public class EventSubject {
     private List<EventObserver> observers = new ArrayList<>();
+
     public void addObserver(EventObserver observer) {
         this.observers.add(observer);
     }
@@ -14,7 +15,7 @@ public class EventSubject {
     }
 
     public void notifyObservers(Event event) {
-        for(EventObserver observer : this.observers) {
+        for (EventObserver observer : this.observers) {
             observer.update(event);
         }
     }

@@ -1,7 +1,8 @@
-package com.startransport;
+package com.startransport.states;
 
 import com.startransport.entities.Passenger;
 import com.startransport.entities.Trip;
+
 
 public class GoodStandingState implements AccountState {
 

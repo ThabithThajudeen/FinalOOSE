@@ -1,8 +1,9 @@
 package com.startransport;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gson.*;
 import com.startransport.entities.Bus;
 import com.startransport.entities.Passenger;
 import com.startransport.entities.Train;
@@ -11,27 +12,25 @@ import com.startransport.errors.UnknownEventException;
 import com.startransport.events.*;
 //import com.startransport.events.BusPassedBusStop;
 import com.startransport.factories.EventFactory;
-import com.startransport.observers.BusObserver;
-import com.startransport.observers.TrainObserver;
+import com.startransport.observers.VehicleObserver;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+//import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+
 public class Main {
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
     private static final String TRIP_ID_PREFIX = "T-";
     private static final String TRAIN_ID_PREFIX = "TRAIN-";
     private static final String BUS_ID_PREFIX = "BUS-";
-    private static final String PASSENGER_ID_PREFIX = "PASSENGER-";
-    private static final String EVENT_ID_PREFIX = "EVENT-";
+    //  private static final String PASSENGER_ID_PREFIX = "PASSENGER-";
+    // private static final String EVENT_ID_PREFIX = "EVENT-";
     private static int tripIdCount = 1;
-    private static int eventIdCount = 1;
+    //private static int eventIdCount = 1;
     private static int busStopPassed = 1;
     private static int trainStopPassed = 1;
 
@@ -43,16 +42,14 @@ public class Main {
     private static Map<String, Bus> buses = new HashMap<>();
     private static Map<String, Train> trains = new HashMap<>();
     private static Map<String, Trip> trips = new HashMap<>();
-    private static Map<String, Event> events = new HashMap<>();
+    //private static Map<String, Event> events = new HashMap<>();
 
     public static void main(String[] args) throws UnknownEventException {
         System.out.println("hii");
+        logger.log(Level.INFO, "Application started");
+        try (FileReader reader = new FileReader("src/main/resources/Passengers.csv");
+             Scanner scanner = new Scanner(reader)) {
 
-        try {
-            InputStream inputStream = Main.class.getResourceAsStream("/Passengers.csv");
-            Scanner scanner = new Scanner(new InputStreamReader(inputStream));
-
-            scanner.nextLine();
             while (scanner.hasNextLine()) {
                 String[] data = scanner.nextLine().split(",");
 
@@ -65,14 +62,20 @@ public class Main {
 
                 // Store the new passenger in the map using passengerID as the key
                 passengers.put(passengerID, passenger1);
-            }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+                logger.log(Level.INFO, "Passengers loaded successfully");
+                // scanner.close();
 
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "An exception occurred while loading passengers", e);
+            throw new UnknownEventException();
+        }
+        logger.log(Level.INFO, "Application ended");
+        System.out.println("hii2");
         try {
-            InputStream inputStream = Main.class.getResourceAsStream("/buses.csv");
-            Scanner scanner = new Scanner(new InputStreamReader(inputStream));
+            FileReader reader = new FileReader("src/main/resources/Bus.csv");
+            Scanner scanner = new Scanner(reader);
+            logger.log(Level.INFO, "Bus reading has started");
 
             scanner.nextLine();
             while (scanner.hasNextLine()) {
@@ -89,22 +92,27 @@ public class Main {
                 if (buses.containsKey(busID)) {
                     bus = buses.get(busID);
                 }
+
                 // Add the passenger to the bus
                 if (passengers.containsKey(passengerID)) {
                     Passenger passenger = passengers.get(passengerID);
-
                 }
+
                 // Store the new bus in the map using busID as the key
                 buses.put(busID, bus);
+                // scanner.close();
             }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, "Buses loaded successfully");
+        } catch (FileNotFoundException e) {
+            logger.log(Level.SEVERE, "An exception occurred while loading buses", e);
+            throw new UnknownEventException();
         }
+        logger.log(Level.INFO, "bus reading and loaded ended");
+        System.out.println("Hii04");
 
-        try {
-            InputStream inputStream = Main.class.getResourceAsStream("/trains.csv");
-            Scanner scanner = new Scanner(new InputStreamReader(inputStream));
-
+        try (FileReader reader = new FileReader("src/main/resources/trains.csv");
+             Scanner scanner = new Scanner(reader)) {
+            logger.log(Level.INFO, "Starting to load trains from trains.csv");
             scanner.nextLine();
             while (scanner.hasNextLine()) {
                 String[] data = scanner.nextLine().split(",");
@@ -115,26 +123,22 @@ public class Main {
                 String status = data[2];
 
                 // Create a new train with the read train ID and status
-                Train train = new Train(trainID, status);
+                Train train = new Train(trainID);
 
                 // If the train already exists in the map, get it
                 if (trains.containsKey(trainID)) {
                     train = trains.get(trainID);
                 }
 
-                // Add the passenger to the train
-//                if (passengers.containsKey(passengerID)) {
-//                    Passenger passenger = passengers.get(passengerID);
-//                    train.addPassenger(passenger);
-//                }
-
                 // Store the new train in the map using trainID as the key
                 trains.put(trainID, train);
             }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, "Successfully loaded trains from trains.csv");
+        } catch (FileNotFoundException e) {
+            logger.log(Level.SEVERE, "File not found: " + e.getMessage(), e);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error closing resources: " + e.getMessage(), e);
         }
-
 
         try {
             InputStream inputStream = Main.class.getResourceAsStream("/events.json");
@@ -143,17 +147,29 @@ public class Main {
             JsonArray array = e.getAsJsonArray();
             System.out.println("String" + array.size());
             for (int i = 0; i < array.size(); i++) {
-
-
                 Event event = eventFactory.getEvent(array.get(i).getAsJsonObject());
                 if (event instanceof TripStartedEvent) {
                     TripStartedEvent e1 = (TripStartedEvent) event;
                     Passenger passenger = passengers.get(e1.getPassengerId());
                     Trip trip = new Trip(TRIP_ID_PREFIX + (tripIdCount++), e1.getPassengerId(), "v1");
+                    trip.setStartStopCount(e1.getStartStopCount());
                     passenger.setCurrentTrip(trip);
                     trips.put(trip.getTripId(), trip);
                     trip.attachObserver(passenger);
+                    if (e1.getVehicleType().equals("BUS")) {
+                        Bus bus = buses.get(e1.getVehicleID());
 
+                        if (bus != null) {
+                            bus.attachObserver((VehicleObserver) trip);
+
+                        }
+                    } else if (e1.getVehicleType().equals("train")) {
+                        Train train = trains.get(e1.getVehicleID());
+                        if (train != null) {
+                            train.attachObserver((VehicleObserver) trip);
+                        }
+                    }
+                    //vehicle.attachObserver(trip)
                 } else if (event instanceof TripStoppedEvent) {
                     TripStoppedEvent e1 = (TripStoppedEvent) event;
                     Passenger passenger = passengers.get(e1.getPassengerId());
@@ -162,49 +178,187 @@ public class Main {
                     trip.setOngoing(false);
                 }
                 if (event instanceof VehiclePassedStop) {
-                    {
-                        VehiclePassedStop v1 = (VehiclePassedStop) event;
-                        Passenger passenger = passengers.get(v1.getPassengerID());
-                        if (v1.getVehicleType().equals("bus")) {
-                            Bus bus = buses.get(BUS_ID_PREFIX + (busStopPassed++) + v1.getPassengerID());
+                    VehiclePassedStop v1 = (VehiclePassedStop) event;
+                    //  Passenger passenger = passengers.get(v1.getPassengerID());
+                    Trip trip = trips.get(v1.getPassengerID());
+
+                    if (v1.getVehicleType().equals("BUS")) { // if instance is bus
+                        Bus bus = buses.get(v1.getVehicleID()); // get the bus from the bus hashmap
+                        if (bus != null) { // if bus is not null
+                            bus.incrementStopCount(); // Increment bus stop count
+                            trip.setCurrentBusCount(bus);
+                            // bus.attachObserver((BusObserver) trip);
+                            logger.log(Level.INFO, "Bus found and Passenger updated");
+                        } else {
+                           bus = new Bus(v1.getVehicleID());// creating a new bus
+                            buses.put(v1.getVehicleID(),bus);
+                            logger.log(Level.INFO, "New Bus created and added to the map: " + v1.getVehicleID());
+
+                        }
+                    } else if (v1.getVehicleType().equals("train")) {
+                        Train train = trains.get(v1.getPassengerID());
+                        if (train != null) {
+                            train.incrementStopCount(); // Increment train stop count
+                           // trip.setCurrentTrainStop(train);
+                           // train.attachObserver((VehicleObserver) trip);
+                            logger.log(Level.INFO, "Train found and Passenger updated");
+                        } else {
+                            train = new Train(v1.getVehicleID()); // Creating a new Train
+                            trains.put(v1.getVehicleID(), train); // Putting the new Train into the HashMap
+                            logger.log(Level.INFO, "New Train created and added to the map: " + v1.getVehicleID());
+                        }
+
+                    }
+                    if (event instanceof VehicleLeft) {
+                        VehicleLeft v102 = (VehicleLeft) event;
+                        Trip trip02 = trips.get(v1.getPassengerID());
+
+                        if (v1.getVehicleType().equals("BUS")) {
+                            Bus bus = buses.get(v1.getVehicleID());
                             if (bus != null) {
-                                passenger.setCurrentBusStop(bus);
-                                bus.attachObserver((BusObserver) passenger);
+                                buses.remove(v1.getVehicleID()); // Removes the bus from the hashmap
+                                logger.log(Level.INFO, "Bus removed from the map: " + v1.getVehicleID());
                             } else {
-                                System.out.println("Bus not found");
+                                logger.log(Level.WARNING, "No bus found to remove for the event: " + event.toString());
                             }
                         } else if (v1.getVehicleType().equals("train")) {
-                            Train train = trains.get(TRAIN_ID_PREFIX + (trainStopPassed++) + v1.getPassengerID());
+                            Train train = trains.get(v1.getPassengerID());
                             if (train != null) {
-                                passenger.setCurrentTrainStop(train);
-                                train.attachObserver((TrainObserver) passenger);
+                                trains.remove(v1.getVehicleID()); // Removes the train from the hashmap
+                                logger.log(Level.INFO, "Train removed from the map: " + v1.getVehicleID());
                             } else {
-                                System.out.println("Train not found");
+                                logger.log(Level.WARNING, "No train found to remove for the event: " + event.toString());
                             }
-                        }
-                        if (event instanceof VehicleCount) {
-                            VehicleCount vc1 = (VehicleCount) event;
-                            Passenger passenger1 = passengers.get(v1.getPassengerID());
-                            if (v1.getVehicleType().equals("bus")) {
-                                Bus bus = buses.get(BUS_ID_PREFIX + (busCount++) + vc1.getPassengerId());
-                                if (bus != null) {
-                                    passenger.setCurrentBusCount(bus);
-                                    bus.attachObserver((BusObserver) passenger1);
-                                } else ((vc1.getVehicleType().equals("train")) {
-                                    Train train = trains.get(TRAIN_ID_PREFIX + (trainCount++) + vc1.getPassengerId());
-                                    if (train != null) {
-                                        passenger1.setCurrentTrainCount(train);
-                                        train.attachObserver((TrainObserver) passenger1);
-                                    } else {
-                                        System.out.println("Train not found");
-                                    }
-                                }
-                            }
-
                         }
                     }
 
-
                 }
+//        try {
+//            InputStream inputStream = Main.class.getResourceAsStream("/events.json");
+//            JsonParser jsonParser = new JsonParser();
+//            JsonElement e = jsonParser.parse(new InputStreamReader(inputStream));
+//            JsonArray array = e.getAsJsonArray();
+//            System.out.println("String" + array.size());
+//            for (int i = 0; i < array.size(); i++) {
+//
+//
+//                Event event = eventFactory.getEvent(array.get(i).getAsJsonObject());
+//                if (event instanceof TripStartedEvent) {
+//                    TripStartedEvent e1 = (TripStartedEvent) event;
+//                    Passenger passenger = passengers.get(e1.getPassengerId());
+//                    Trip trip = new Trip(TRIP_ID_PREFIX + (tripIdCount++), e1.getPassengerId(), "v1");
+//                    passenger.setCurrentTrip(trip);
+//                    trips.put(trip.getTripId(), trip);
+//                    trip.attachObserver(passenger);
+//                    //vehicle.attachObserver(trip)
+//                } else if (event instanceof TripStoppedEvent) {
+//                    TripStoppedEvent e1 = (TripStoppedEvent) event;
+//                    Passenger passenger = passengers.get(e1.getPassengerId());
+//                    Trip trip = passenger.getCurrentTrip();
+//                    trip.setTimeEnd(LocalDateTime.now());
+//                    trip.setOngoing(false);
+//                }
+//                else if (event instanceof VehiclePassedStop) {
+//                    VehiclePassedStop v1 = (VehiclePassedStop) event;
+//                    Passenger passenger = passengers.get(v1.getPassengerID());
+//
+//                    if (v1.getVehicleType().equals("BUS")) {
+//                        Bus bus = buses.get(v1.getVehicleID());
+//                        if (bus != null) {
+//                            passenger.setCurrentBusStop(bus);
+//                            bus.attachObserver((BusObserver) passenger);
+//                            logger.log(Level.INFO, "Bus found and Passenger updated");
+//                        } else {
+//                            System.out.println("Bus not found");
+//                            logger.log(Level.WARNING, "Bus not found for the event: " + event.toString());
+//                        }
+//                    }
+//                    else if (v1.getVehicleType().equals("train")) {
+//                        Train train = trains.get(TRAIN_ID_PREFIX + (trainStopPassed++) + v1.getPassengerID());
+//                        if (train != null) {
+//                            passenger.setCurrentTrainStop(train);
+//                            train.attachObserver((TrainObserver) passenger);
+//                            logger.log(Level.INFO, "Train found and Passenger updated");
+//                        } else {
+//                            System.out.println("Train not found");
+//                            logger.log(Level.WARNING, "Train not found for the event: " + event.toString());
+//                        }
+//                    }
+//                }
 
+
+//                        if (event instanceof VehicleCount) {
+//                            VehicleCount vc1 = (VehicleCount) event;
+//                            Passenger passenger1 = passengers.get(vc1.getPassengerId()); // Note: I changed v1 to vc1 as I believe that's what you intended.
+//                            if (vc1.getVehicleType().equals("bus")) {
+//                                Bus bus = buses.get(BUS_ID_PREFIX + (busCount++) + vc1.getPassengerId());
+//                                if (bus != null) {
+//                                    passenger1.setCurrentBusCount(bus);
+//                                    bus.attachObserver((BusObserver) passenger1);
+//                                    logger.log(Level.INFO, "Bus found and Passenger count updated");
+//                                }
+//                            } else if (vc1.getVehicleType().equals("train")) {
+//                                Train train = trains.get(TRAIN_ID_PREFIX + (trainCount++) + vc1.getPassengerId());
+//                                if (train != null) {
+//                                    passenger1.setCurrentTrainCount(train);
+//                                    train.attachObserver((TrainObserver) passenger1);
+//                                    logger.log(Level.INFO, "Train found and Passenger count updated");
+//                                } else {
+//                                    System.out.println("Train not found");
+//                                    logger.log(Level.WARNING, "Train not found for the event: " + event.toString());
+//                                }
+//                            }
+//                        }
+
+
+                Scanner scanner = new Scanner(System.in);
+                boolean exit = false;
+                while (!exit) {
+                    System.out.println("1.Please choose an option");
+                    System.out.println("2.Get the bus count");
+                    System.out.println("3.Get the train count");
+                    System.out.println("4.Get the bus stops passed count");
+                    System.out.println("5.Get the train stops passed count");
+                    System.out.println("6.Get the Account Status");
+                    int option = scanner.nextInt();
+
+                    switch (option) {
+                        case 1:
+                            System.out.println("The bus count is" + busCount);
+                            break;
+                        case 2:
+                            System.out.println("The train count is" + trainCount);
+                            break;
+                        case 3:
+                            System.out.println("The bus stopped passed count is" + busCount);
+                            break;
+                        case 4:
+                            System.out.println("The train stopped passed count is" + trainCount);
+                            break;
+                        case 5:
+                            // call the method to get account status
+                            break;
+                        case 6:
+                            exit = true;
+                            break;
+                        default:
+                            System.out.println("Invalid option, please try again.");
+                    }
+                }
+                scanner.close();
             }
+        }finally {
+
+        }
+    }
+
+
+}
+
+
+
+
+
+
+
+

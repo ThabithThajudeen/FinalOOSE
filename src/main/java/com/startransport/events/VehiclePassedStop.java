@@ -2,21 +2,21 @@ package com.startransport.events;
 
 public class VehiclePassedStop extends Event {
     String passengerID;
+    String eventID;
+    String eventType;
+    String vehicleType;
+    String vehicleID;
 
-    String EventID;
-    String EventType;
-    String VehicleType;
-    String VehicleID;
-
-    public VehiclePassedStop(String eventId,String eventType,String vehicleType,String vehicleID) {
+    public VehiclePassedStop(String eventId, String eventType, String vehicleType, String vehicleID) {
 
         super(eventId);
-        this.EventID = eventId;
-        this.EventType = eventType;
-        this.VehicleType = vehicleType;
-        this.VehicleID = vehicleID;
+        this.eventID = eventId;
+        this.eventType = eventType;
+        this.vehicleType = vehicleType;
+        this.vehicleID = vehicleID;
 
     }
+
     public String getPassengerID() {
         return passengerID;
     }
@@ -26,34 +26,34 @@ public class VehiclePassedStop extends Event {
     }
 
     public String getEventID() {
-        return EventID;
+        return eventID;
     }
 
     public void setEventID(String eventID) {
-        EventID = eventID;
+        this.eventID = eventID;
     }
 
     public String getEventType() {
-        return EventType;
+        return eventType;
     }
 
     public void setEventType(String eventType) {
-        EventType = eventType;
+        this.eventType = eventType;
     }
 
     public String getVehicleType() {
-        return VehicleType;
+        return vehicleType;
     }
 
     public void setVehicleType(String vehicleType) {
-        VehicleType = vehicleType;
+        this.vehicleType = vehicleType;
     }
 
     public String getVehicleID() {
-        return VehicleID;
+        return vehicleID;
     }
 
     public void setVehicleID(String vehicleID) {
-        VehicleID = vehicleID;
+        this.vehicleID = vehicleID;
     }
 }

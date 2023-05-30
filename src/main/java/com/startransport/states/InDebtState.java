@@ -1,6 +1,7 @@
-package com.startransport;
+package com.startransport.states;
 import com.startransport.entities.Passenger;
 import com.startransport.entities.Trip;
+
 
 import java.util.ArrayList;
 

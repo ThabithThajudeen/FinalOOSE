@@ -1,11 +1,52 @@
 package com.startransport.entities;
 
-import com.startransport.observers.TrainObserver;
+import com.startransport.observers.VehicleObserver;
 
 import java.util.ArrayList;
 
 public class Train {
     private String passengerID;
+    private String trainID;
+    private ArrayList<VehicleObserver> observers = new ArrayList<>();
+    private int initialStopCount;
+    private int currentStopCount;
+    private int tripPassedCount;
+
+    public int getTripPassedCount() {
+        return tripPassedCount;
+    }
+
+    public void incrementStopCount() {
+        this.currentStopCount++;
+    }
+
+    public void setTripPassedCount(int tripPassedCount) {
+        this.tripPassedCount = tripPassedCount;
+    }
+
+    public int getInitialStopCount() {
+        return initialStopCount;
+    }
+
+    public void setInitialStopCount(int initialStopCount) {
+        this.initialStopCount = initialStopCount;
+    }
+
+    public int getCurrentStopCount() {
+        return currentStopCount;
+    }
+
+    public void setCurrentStopCount(int currentStopCount) {
+        this.currentStopCount = currentStopCount;
+    }
+
+
+
+    public Train(String passengerID) {
+        this.passengerID = passengerID;
+        this.trainID = trainID;
+
+    }
 
     public String getPassengerID() {
         return passengerID;
@@ -23,32 +64,26 @@ public class Train {
         this.trainID = trainID;
     }
 
-    public ArrayList<TrainObserver> getObservers() {
+    public ArrayList<VehicleObserver> getObservers() {
         return observers;
     }
 
-    public void setObservers(ArrayList<TrainObserver> observers) {
+    public void setObservers(ArrayList<VehicleObserver> observers) {
         this.observers = observers;
     }
 
-    private String trainID;
-    private ArrayList<TrainObserver> observers = new ArrayList<>();
-
-
-    public Train(String passengerID, String trainID){
-        this.passengerID = passengerID;
-        this.trainID = trainID;
-
-    }
-
-    public void attachObserver(TrainObserver observer){
+    public void attachObserver(VehicleObserver observer) {
         this.observers.add(observer);
     }
-    public void notifyAllTripObservers(){
-        for (TrainObserver o: observers){
-            o.updateCurrentTrainStand();
+
+    public void notifyAllTripObservers() {
+        for (VehicleObserver o : observers) {
+            o.updateCurrentstand();
 
         }
+    }
+    public int getStopsPassed() {
+        return currentStopCount - initialStopCount;
     }
 
 }
