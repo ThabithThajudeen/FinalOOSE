@@ -144,6 +144,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trip implements Observer<Vehicle> {
+
     private String passengerId;
     private String tripId;
     private LocalDateTime timeStart;
@@ -167,6 +168,13 @@ public class Trip implements Observer<Vehicle> {
     }
 
 
+    public String getPassengerId() {
+        return passengerId;
+    }
+
+    public void setPassengerId(String passengerId) {
+        this.passengerId = passengerId;
+    }
 
   //  public Bus getCurrentBusCount() {
    //     return currentBusCount;
@@ -182,45 +190,45 @@ public class Trip implements Observer<Vehicle> {
     public void setStartStopCount(int startStopCount) {
         this.startStopCount = startStopCount;
     }
-    public String getPassengerId() {
-        return passengerId;
-    }
+//    public String getPassengerId() {
+//        return passengerId;
+//    }
 
-    public void setPassengerId(String passengerId) {
-        this.passengerId = passengerId;
-    }
+//   // public void setPassengerId(String passengerId) {
+//        this.passengerId = passengerId;
+//    }
 
     public String getTripId() {
         return tripId;
     }
 
-    public void setTripId(String tripId) {
-        this.tripId = tripId;
-    }
+//    public void setTripId(String tripId) {
+//        this.tripId = tripId;
+//    }
 
-    public LocalDateTime getTimeStart() {
-        return timeStart;
-    }
+//    public LocalDateTime getTimeStart() {
+//        return timeStart;
+//    }
 
-    public void setTimeStart(LocalDateTime timeStart) {
-        this.timeStart = timeStart;
-    }
+//    public void setTimeStart(LocalDateTime timeStart) {
+//        this.timeStart = timeStart;
+//    }
 
-    public LocalDateTime getTimeEnd() {
-        return timeEnd;
-    }
+//    public LocalDateTime getTimeEnd() {
+//        return timeEnd;
+//    }
 
     public void setTimeEnd(LocalDateTime timeEnd) {
         this.timeEnd = timeEnd;
     }
 
-    public String getVehicleId() {
-        return vehicleId;
-    }
+//    public String getVehicleId() {
+//        return vehicleId;
+//    }
 
-    public void setVehicleId(String vehicleId) {
-        this.vehicleId = vehicleId;
-    }
+//    public void setVehicleId(String vehicleId) {
+//        this.vehicleId = vehicleId;
+//    }
 
     public boolean isOngoing() {
         return isOngoing;
@@ -234,9 +242,9 @@ public class Trip implements Observer<Vehicle> {
         return isPaid;
     }
 
-    public void setPaid(boolean paid) {
-        isPaid = paid;
-    }
+//    public void setPaid(boolean paid) {
+//        isPaid = paid;
+//    }
 
 //    public Train getCurrentTrainStop() {
 //        return currentTrainStop;
@@ -254,13 +262,13 @@ public class Trip implements Observer<Vehicle> {
 //        this.currentBusStop = currentBusStop;
 //    }
 //
-    public int getInitialStopCount() {
-        return initialStopCount;
-    }
+//    public int getInitialStopCount() {
+//        return initialStopCount;
+//    }
 
-    public int getCurrentStopCount() {
-        return currentStopCount;
-    }
+//    public int getCurrentStopCount() {
+//        return currentStopCount;
+//    }
 
 //    public List<TripObserver> getObservers() {
 //        return observers;
@@ -281,9 +289,9 @@ public class Trip implements Observer<Vehicle> {
         this.initialStopCount = initialStopCount;
     }
 
-    public void setCurrentStopCount(int currentStopCount) {
-        this.currentStopCount = currentStopCount;
-    }
+//    public void setCurrentStopCount(int currentStopCount) {
+//        this.currentStopCount = currentStopCount;
+//    }
 
     public int getStopsPassed() {
         return currentStopCount - initialStopCount;
@@ -334,12 +342,12 @@ public class Trip implements Observer<Vehicle> {
         this.isCardSwiped = isCardSwiped;
         this.notifyAllTripObservers();
     }
-    public void endTrip() {
-        // Set the end time of the trip to now
-        this.timeEnd = LocalDateTime.now();
-
-        // Set the ongoing status to false
-        this.isOngoing = false;
-    }
+//    public void endTrip() {
+//        // Set the end time of the trip to now
+//        this.timeEnd = LocalDateTime.now();
+//
+//        // Set the ongoing status to false
+//        this.isOngoing = false;
+//    }
 
 }

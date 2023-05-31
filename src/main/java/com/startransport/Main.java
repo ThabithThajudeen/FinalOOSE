@@ -9,13 +9,9 @@ import com.startransport.errors.JsonProcessingException;
 import com.startransport.errors.UnknownEventException;
 import com.startransport.errors.UnknownEventProcessingException;
 import com.startransport.events.*;
-//import com.startransport.events.BusPassedBusStop;
 import com.startransport.factories.EventFactory;
-import com.startransport.observers.VehicleObserver;
-
 import java.io.*;
 import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;

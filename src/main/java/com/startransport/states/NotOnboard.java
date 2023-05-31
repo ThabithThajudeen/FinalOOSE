@@ -10,11 +10,11 @@ public class NotOnboard extends OnboardState {
     public String getStatusMessage() {
         return "Not Onboard";
     }
-    public void leaveBoard(Vehicle vehicle) {
-        this.onboardState = new NotOnboard();
-        vehicle.incrementSeatCount();
-    }
-    public String checkStatus() {
-        return this.onboardState.getStatusMessage();
-    }
+//    public void leaveBoard(Vehicle vehicle) {
+//        this.onboardState = new NotOnboard();
+//        vehicle.incrementSeatCount();
+//    }
+//    public String checkStatus() {
+//        return this.onboardState.getStatusMessage();
+//    }
 }

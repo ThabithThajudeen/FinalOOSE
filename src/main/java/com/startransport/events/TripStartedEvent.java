@@ -56,32 +56,27 @@ public class TripStartedEvent extends Event {
         return passengerId;
     }
 
-    public void setPassengerId(String passengerId) {
-        this.passengerId = passengerId;
-    }
-
-    public VehicleType getVehicleType() {
-        return vehicleType;
-    }
-
-    public void setVehicleType(VehicleType vehicleType) {
-        this.vehicleType = vehicleType;
-    }
+//    public void setPassengerId(String passengerId) {
+//        this.passengerId = passengerId;
+//    }
+//
+//    public VehicleType getVehicleType() {
+//        return vehicleType;
+//    }
+//
+//    public void setVehicleType(VehicleType vehicleType) {
+//        this.vehicleType = vehicleType;
+//    }
 
     public String getVehicleID() {
         return vehicleID;
     }
 
-    public void setVehicleID(String vehicleID) {
-        this.vehicleID = vehicleID;
-    }
+
     public int getStartStopCount() {
         return startStopCount;
     }
 
-    public void setStartStopCount(int startStopCount) {
-        this.startStopCount = startStopCount;
-    }
 
     public TripStartedEvent(String eventId, String passengerId, VehicleType vehicleType, String vehicleID) {
         super(eventId);

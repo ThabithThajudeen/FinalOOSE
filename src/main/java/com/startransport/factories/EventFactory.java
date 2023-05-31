@@ -5,8 +5,7 @@ package com.startransport.factories;
 
 import com.google.gson.JsonObject;
 
-//import com.startransport.entities.Passenger;
-//import com.startransport.entities.Trip;
+
 import com.startransport.entities.VehicleType;
 import com.startransport.errors.UnknownEventException;
 import com.startransport.events.*;

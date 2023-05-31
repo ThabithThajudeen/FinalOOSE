@@ -13,9 +13,9 @@ public class TripStoppedEvent extends Event {
         return passengerId;
     }
 
-    public void setPassengerId(String passengerId) {
-        this.passengerId = passengerId;
-    }
+//   // public void setPassengerId(String passengerId) {
+//        this.passengerId = passengerId;
+//    }
 
 
 }

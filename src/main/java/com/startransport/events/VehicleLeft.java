@@ -11,19 +11,19 @@ public class VehicleLeft extends Event {
         return vehicleID;
     }
 
-    public void setVehicleID(String vehicleID) {
-        this.vehicleID = vehicleID;
-    }
-
-
-
-    public VehicleType getVehicleType() {
-        return vehicleType;
-    }
-
-    public void setVehicleType(VehicleType vehicleType) {
-        this.vehicleType = vehicleType;
-    }
+//    public void setVehicleID(String vehicleID) {
+//        this.vehicleID = vehicleID;
+//    }
+//
+//
+//
+//    public VehicleType getVehicleType() {
+//        return vehicleType;
+//    }
+//
+//    public void setVehicleType(VehicleType vehicleType) {
+//        this.vehicleType = vehicleType;
+//    }
 
 
     public VehicleLeft(String eventId,VehicleType vehicleType) {

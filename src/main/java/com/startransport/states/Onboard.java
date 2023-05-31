@@ -7,16 +7,16 @@ public class Onboard extends OnboardState {
     public String getStatusMessage() {
         return "Onboard";
     }
-    public OnboardState getOnboardState() {
-        return onboardState;
-    }
-    public String checkStatus() {
-        return this.onboardState.getStatusMessage();
-    }
-
-    public void setOnboardState(OnboardState onboardState) {
-        this.onboardState = onboardState;
-    }
+//    public OnboardState getOnboardState() {
+//        return onboardState;
+//    }
+//    public String checkStatus() {
+//        return this.onboardState.getStatusMessage();
+//    }
+//
+//    public void setOnboardState(OnboardState onboardState) {
+//        this.onboardState = onboardState;
+//    }
     public void goOnboard(Vehicle vehicle) {
         if(vehicle.hasAvailableSeats()) {
             this.onboardState = new Onboard();

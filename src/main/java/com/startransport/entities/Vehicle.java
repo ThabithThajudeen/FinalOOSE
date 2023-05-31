@@ -20,9 +20,9 @@ public class Vehicle {
         this.currentStopCount++;
     }
 
-    public void setCurrentStopCount(int currentStopCount) {
-        this.currentStopCount = currentStopCount;
-    }
+//    public void setCurrentStopCount(int currentStopCount) {
+//        this.currentStopCount = currentStopCount;
+//    }
 
 
     private List<Observer<Vehicle>> vehicleObservers = new ArrayList<>();
@@ -31,9 +31,9 @@ public class Vehicle {
         return vehicleType;
     }
 
-    public void setVehicleType(VehicleType vehicleType) {
-        this.vehicleType = vehicleType;
-    }
+//    public void setVehicleType(VehicleType vehicleType) {
+//        this.vehicleType = vehicleType;
+//    }
 
 
 
@@ -41,9 +41,9 @@ public class Vehicle {
         return totalSeatCount;
     }
 
-    public void setTotalSeatCount(int totalSeatCount) {
-        this.totalSeatCount = totalSeatCount;
-    }
+//    public void setTotalSeatCount(int totalSeatCount) {
+//        this.totalSeatCount = totalSeatCount;
+//    }
 
 
 
@@ -60,15 +60,15 @@ public class Vehicle {
         return vehicleID;
     }
 
-    public void setVehicleID(String vehicleID) {
-        this.vehicleID = vehicleID;
-    }
+//    public void setVehicleID(String vehicleID) {
+//        this.vehicleID = vehicleID;
+//    }
 
 
 
-    public Vehicle(int availableSeatCount) {
-        this.availableSeatCount = availableSeatCount;
-    }
+//    public Vehicle(int availableSeatCount) {
+//        this.availableSeatCount = availableSeatCount;
+//    }
 
     public boolean hasAvailableSeats() {
         return availableSeatCount > 0;
@@ -80,9 +80,9 @@ public class Vehicle {
         }
     }
 
-    public void incrementSeatCount() {
-        availableSeatCount++;
-    }
+//    public void incrementSeatCount() {
+//        availableSeatCount++;
+//    }
 //    public void attachObserver(VehicleObserver observer) {
 //        this.vehicleObservers.add(observer);
 //    }
@@ -100,12 +100,12 @@ public class Vehicle {
         this.vehicleObservers.add(observer);
     }
 
-    public void notifyAllTripObservers() {
-        for (Observer<Vehicle> o : vehicleObservers) {
-            o.update(this);
-
-        }
-    }
+//    public void notifyAllTripObservers() {
+//        for (Observer<Vehicle> o : vehicleObservers) {
+//            o.update(this);
+//
+//        }
+   // }
 }
 
 

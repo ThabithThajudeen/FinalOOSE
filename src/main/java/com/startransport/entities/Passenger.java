@@ -17,6 +17,7 @@ public class Passenger implements Observer<Trip> {
 
 //    private Train currentTrainCount;
     private List<Trip> pastTrips = new ArrayList<>();
+
     private OnboardState onboardState;
 
 
@@ -27,26 +28,26 @@ public class Passenger implements Observer<Trip> {
 
     }
 
-    public Passenger(String passengerID) {
-        this.passengerID = passengerID;
-
-    }
+//    public Passenger(String passengerID) {
+//        this.passengerID = passengerID;
+//
+//    }
 
     public String getPassengerName() {
         return passengerName;
     }
 
-    public void setPassengerName(String passengerName) {
-        this.passengerName = passengerName;
-    }
-
-    public List<Trip> getPastTrips() {
-        return pastTrips;
-    }
-
-    public void setPastTrips(List<Trip> pastTrips) {
-        this.pastTrips = pastTrips;
-    }
+//    public void setPassengerName(String passengerName) {
+//        this.passengerName = passengerName;
+//    }
+//
+//    public List<Trip> getPastTrips() {
+//        return pastTrips;
+//    }
+//
+//    public void setPastTrips(List<Trip> pastTrips) {
+//        this.pastTrips = pastTrips;
+//    }
 
 
 
@@ -72,9 +73,9 @@ public class Passenger implements Observer<Trip> {
         return passengerID;
     }
 
-    public void setPassengerID(String passengerID) {
-        this.passengerID = passengerID;
-    }
+//    public void setPassengerID(String passengerID) {
+//        this.passengerID = passengerID;
+//    }
 
     public Trip getCurrentTrip() {
         return currentTrip;
@@ -84,9 +85,9 @@ public class Passenger implements Observer<Trip> {
         this.currentTrip = currentTrip;
     }
 
-    public void addToPastTrips(Trip trip) {
-        pastTrips.add(trip);
-    }
+//    public void addToPastTrips(Trip trip) {
+//        pastTrips.add(trip);
+//    }
     public OnboardState getOnboardState() {
         return onboardState;
     }
@@ -94,7 +95,7 @@ public class Passenger implements Observer<Trip> {
     public void setOnboardState(OnboardState onboardState) {
         this.onboardState = onboardState;
     }
-
+//
 
     public List<Trip> getAllPastTrips() {
         List<Trip> x = new ArrayList<>();

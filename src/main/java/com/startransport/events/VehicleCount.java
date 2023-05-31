@@ -15,31 +15,31 @@ public class VehicleCount extends Event {
         this.vehicleID = vehicleID;
     }
 
-    public VehicleCount(String eventId) {
-        super(eventId);
-    }
-
-    public String getPassengerId() {
-        return passengerId;
-    }
-
-    public void setPassengerId(String passengerId) {
-        this.passengerId = passengerId;
-    }
-
-    public VehicleType getVehicleType() {
-        return vehicleType;
-    }
-
-    public void setVehicleType(VehicleType vehicleType) {
-        this.vehicleType = vehicleType;
-    }
-
-    public String getVehicleID() {
-        return vehicleID;
-    }
-
-    public void setVehicleID(String vehicleID) {
-        this.vehicleID = vehicleID;
-    }
+//    public VehicleCount(String eventId) {
+//        super(eventId);
+//    }
+//
+//    public String getPassengerId() {
+//        return passengerId;
+//    }
+//
+//    public void setPassengerId(String passengerId) {
+//        this.passengerId = passengerId;
+//    }
+//
+//    public VehicleType getVehicleType() {
+//        return vehicleType;
+//    }
+//
+//    public void setVehicleType(VehicleType vehicleType) {
+//        this.vehicleType = vehicleType;
+//    }
+//
+//    public String getVehicleID() {
+//        return vehicleID;
+//    }
+//
+//    public void setVehicleID(String vehicleID) {
+//        this.vehicleID = vehicleID;
+//    }
 }
