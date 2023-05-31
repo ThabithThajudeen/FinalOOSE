@@ -1,4 +1,4 @@
-package com.startransport.events;
+package com.startransport.entities;
 
 public enum VehicleType {
     TRAINS,

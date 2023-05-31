@@ -43,6 +43,8 @@
 //
 package com.startransport.events;
 
+import com.startransport.entities.VehicleType;
+
 public class TripStartedEvent extends Event {
 
     private String passengerId;

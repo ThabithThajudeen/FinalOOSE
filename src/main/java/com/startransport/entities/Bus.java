@@ -4,9 +4,9 @@ import com.startransport.observers.VehicleObserver;
 
 import java.util.ArrayList;
 
-public class Bus {
+public class Bus extends Vehicle{
     private String passengerID;
-    private String busID;
+   // private String busID;
     private ArrayList<VehicleObserver> observers = new ArrayList<>();
     private int initialStopCount;
     private int currentStopCount;
@@ -47,16 +47,16 @@ public class Bus {
     }
 
 
-    public Bus(String passengerID, String vehicleID) {
-        this.passengerID = passengerID;
-        this.busID = vehicleID;
+    public Bus(String vehicleID,int seatCount,int totalSeatCount) {
+        super(vehicleID,seatCount,totalSeatCount);
 
     }
 
 
-    public Bus(String vehicleID) {
-        this.busID = vehicleID;
-    }
+//    public Bus(String vehicleID) {
+//        super();
+//        this.busID = vehicleID;
+//    }
 
     public String getPassengerID() {
         return passengerID;
@@ -66,24 +66,15 @@ public class Bus {
         this.passengerID = passengerID;
     }
 
-    public String getBusID() {
-        return busID;
-    }
+//    public String getBusID() {
+//        return busID;
+//    }
 
-    public void setBusID(String busID) {
-        this.busID = busID;
-    }
+//    public void setBusID(String busID) {
+//        this.busID = busID;
+//    }
 
-    public void attachObserver(VehicleObserver observer) {
-        this.observers.add(observer);
-    }
 
-    public void notifyAllTripObservers() {
-        for (VehicleObserver o : observers) {
-            o.updateCurrentstand();
-
-        }
-    }
     public int getStopsPassed() {
         return currentStopCount - initialStopCount;
     }

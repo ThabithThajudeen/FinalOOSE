@@ -1,13 +1,15 @@
 package com.startransport.events;
 
-public class VehiclePassedStop extends Event {
-    String passengerID;
-    String eventID;
-    String eventType;
-    String vehicleType;
-    String vehicleID;
+import com.startransport.entities.VehicleType;
 
-    public VehiclePassedStop(String eventId, String eventType, String vehicleType, String vehicleID) {
+public class VehiclePassedStop extends Event {
+    private String passengerID;
+    private String eventID;
+    private String eventType;
+    private VehicleType vehicleType;
+    private String vehicleID;
+
+    public VehiclePassedStop(String eventId, String eventType, VehicleType vehicleType, String vehicleID) {
 
         super(eventId);
         this.eventID = eventId;
@@ -41,11 +43,11 @@ public class VehiclePassedStop extends Event {
         this.eventType = eventType;
     }
 
-    public String getVehicleType() {
+    public VehicleType getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(String vehicleType) {
+    public void setVehicleType(VehicleType vehicleType) {
         this.vehicleType = vehicleType;
     }
 

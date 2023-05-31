@@ -1,5 +1,7 @@
 package com.startransport.events;
 
+import com.startransport.entities.VehicleType;
+
 public class VehicleArrival extends Event{
     private VehicleType vehicleType;
 

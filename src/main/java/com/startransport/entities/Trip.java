@@ -136,11 +136,12 @@
 package com.startransport.entities;
 
 import com.startransport.observers.TripObserver;
+import com.startransport.observers.VehicleObserver;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Trip implements TripObserver {
+public class Trip implements VehicleObserver {
     private String passengerId;
     private String tripId;
     private LocalDateTime timeStart;
@@ -294,14 +295,20 @@ public class Trip implements TripObserver {
         return calculateFare();
     }
 
+//    @Override
+//    public void updateCurrentTrip() {
+//        if (this.isOngoing()) {
+//            if (this.getCurrentBusStop() != null) {
+//                this.setCurrentStopCount(this.getCurrentBusStop().getStopsPassed());
+//            } else if (this.getCurrentTrainStop() != null) {
+//                this.setCurrentStopCount(this.getCurrentTrainStop().getStopsPassed());
+//            }
+//        }
+//    }
+
+
     @Override
-    public void updateCurrentTrip() {
-        if (this.isOngoing()) {
-            if (this.getCurrentBusStop() != null) {
-                this.setCurrentStopCount(this.getCurrentBusStop().getStopsPassed());
-            } else if (this.getCurrentTrainStop() != null) {
-                this.setCurrentStopCount(this.getCurrentTrainStop().getStopsPassed());
-            }
-        }
+    public void updateCurrentVehicle() {
+
     }
 }

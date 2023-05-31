@@ -1,7 +1,11 @@
+
+
 package com.startransport.factories;
+
 
 import com.google.gson.JsonObject;
 
+import com.startransport.entities.VehicleType;
 import com.startransport.errors.UnknownEventException;
 import com.startransport.events.*;
 
@@ -39,7 +43,7 @@ public class EventFactory {
             } else {
                 vehicleTypeEnum = VehicleType.TRAINS;
             }
-            event = new VehiclePassedStop(eventId,eventType,vehicleType,vehicleID);
+            event = new VehiclePassedStop(eventId,eventType,vehicleTypeEnum,vehicleID);
 
 
            // return event;
