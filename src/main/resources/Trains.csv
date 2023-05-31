@@ -1,4 +1,4 @@
-TrainID,PassengerID,Status
-101,1,On Time
-102,2,Delayed
-103,3,On Time
+TrainID,PassengerID,SeatCount
+101,1,1
+102,2,2
+103,3,3

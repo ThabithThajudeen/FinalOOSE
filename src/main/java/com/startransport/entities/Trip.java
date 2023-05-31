@@ -135,13 +135,15 @@
 
 package com.startransport.entities;
 
+import com.startransport.observers.Observer;
 import com.startransport.observers.TripObserver;
-import com.startransport.observers.VehicleObserver;
+//import com.startransport.observers.VehicleObserver;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Trip implements VehicleObserver {
+public class Trip implements Observer<Vehicle> {
     private String passengerId;
     private String tripId;
     private LocalDateTime timeStart;
@@ -149,22 +151,30 @@ public class Trip implements VehicleObserver {
     private String vehicleId;
     private boolean isOngoing;
     private boolean isPaid;
-    private Train currentTrainStop;
-    private Bus currentBusStop;  // renamed to match type
+//    private Train currentTrainStop;
+//    private Bus currentBusStop;  // renamed to match type
     private int initialStopCount;
     private int currentStopCount;
-    private ArrayList<TripObserver> observers = new ArrayList<>();
+    private List<Observer<Trip>> observers = new ArrayList<>();
     private int startStopCount;
 
-    private Bus currentBusCount;
+//    private Bus currentBusCount;
     private static final double PRICE_PER_STOP = 2.5;
-    public Bus getCurrentBusCount() {
-        return currentBusCount;
+    private boolean isCardSwiped;
+
+    public boolean isCardSwiped() {
+        return isCardSwiped;
     }
 
-    public void setCurrentBusCount(Bus currentBusCount) {
-        this.currentBusCount = currentBusCount;
-    }
+
+
+  //  public Bus getCurrentBusCount() {
+   //     return currentBusCount;
+   // }
+
+//    public void setCurrentBusCount(Bus currentBusCount) {
+//        this.currentBusCount = currentBusCount;
+//    }
     public int getStartStopCount() {
         return startStopCount;
     }
@@ -228,22 +238,22 @@ public class Trip implements VehicleObserver {
         isPaid = paid;
     }
 
-    public Train getCurrentTrainStop() {
-        return currentTrainStop;
-    }
+//    public Train getCurrentTrainStop() {
+//        return currentTrainStop;
+//    }
 
-    public void setCurrentTrainStop(Train currentTrainStop) {
-        this.currentTrainStop = currentTrainStop;
-    }
+//    public void setCurrentTrainStop(Train currentTrainStop) {
+//        this.currentTrainStop = currentTrainStop;
+//    }
 
-    public Bus getCurrentBusStop() {
-        return currentBusStop;
-    }
-
-    public void setCurrentBusStop(Bus currentBusStop) {
-        this.currentBusStop = currentBusStop;
-    }
-
+//    public Bus getCurrentBusStop() {
+//        return currentBusStop;
+//    }
+//
+//    public void setCurrentBusStop(Bus currentBusStop) {
+//        this.currentBusStop = currentBusStop;
+//    }
+//
     public int getInitialStopCount() {
         return initialStopCount;
     }
@@ -252,13 +262,13 @@ public class Trip implements VehicleObserver {
         return currentStopCount;
     }
 
-    public ArrayList<TripObserver> getObservers() {
-        return observers;
-    }
-
-    public void setObservers(ArrayList<TripObserver> observers) {
-        this.observers = observers;
-    }
+//    public List<TripObserver> getObservers() {
+//        return observers;
+//    }
+//
+//    public void setObservers(List<TripObserver> observers) {
+//        this.observers = observers;
+//    }
 
 
     public Trip(String tripId, String passengerId, String vehicleId) {
@@ -278,13 +288,13 @@ public class Trip implements VehicleObserver {
     public int getStopsPassed() {
         return currentStopCount - initialStopCount;
     }
-    public void attachObserver(TripObserver observer){
+    public void attachObserver(Observer<Trip> observer){
         this.observers.add(observer);
     }
 
     public void notifyAllTripObservers(){
-        for (TripObserver o: observers){
-            o.updateCurrentTrip();
+        for (Observer<Trip> o: observers){
+            o.update(this);
         }
     }
     public double calculateFare() {
@@ -307,8 +317,29 @@ public class Trip implements VehicleObserver {
 //    }
 
 
+//    @Override
+//    public void updateCurrentVehicle(Vehicle vehicle) {
+//        int vehicleStopCount= vehicle.getCurrentStopCount();
+//        this.currentStopCount = this.initialStopCount-vehicleStopCount;
+//
+//    }
+
     @Override
-    public void updateCurrentVehicle() {
+    public void update(Vehicle vehicle) {
+        int vehicleStopCount= vehicle.getCurrentStopCount();
+        this.currentStopCount = this.initialStopCount-vehicleStopCount;
 
     }
+    public void setCardSwiped(boolean isCardSwiped) {
+        this.isCardSwiped = isCardSwiped;
+        this.notifyAllTripObservers();
+    }
+    public void endTrip() {
+        // Set the end time of the trip to now
+        this.timeEnd = LocalDateTime.now();
+
+        // Set the ongoing status to false
+        this.isOngoing = false;
+    }
+
 }

@@ -1,8 +1,10 @@
 package com.startransport.entities;
 
-import com.startransport.observers.VehicleObserver;
+import com.startransport.observers.Observer;
+//import com.startransport.observers.VehicleObserver;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Vehicle {
     private int availableSeatCount;
@@ -23,7 +25,7 @@ public class Vehicle {
     }
 
 
-    private ArrayList<VehicleObserver> observers = new ArrayList<>();
+    private List<Observer<Vehicle>> vehicleObservers = new ArrayList<>();
 
     public VehicleType getVehicleType() {
         return vehicleType;
@@ -45,10 +47,11 @@ public class Vehicle {
 
 
 
-    public Vehicle(String vehicleID, int availableSeatCount, int totalSeatCount) {
+    public Vehicle(String vehicleID, int availableSeatCount, int totalSeatCount,VehicleType vehicleType) {
         this.availableSeatCount = availableSeatCount;
         this.vehicleID = vehicleID;
         this.totalSeatCount = totalSeatCount;
+        this.vehicleType = vehicleType;
     }
 
 
@@ -80,13 +83,26 @@ public class Vehicle {
     public void incrementSeatCount() {
         availableSeatCount++;
     }
-    public void attachObserver(VehicleObserver observer) {
-        this.observers.add(observer);
+//    public void attachObserver(VehicleObserver observer) {
+//        this.vehicleObservers.add(observer);
+//    }
+//
+//    public void notifyAllTripObservers() {
+//        for (VehicleObserver o : vehicleObservers) {
+//            o.updateCurrentVehicle(this);
+//
+//        }
+//    }
+    public int getOngoingTripCount(){
+        return vehicleObservers.size();
+    }
+    public void attachObserver(Observer<Vehicle> observer) {
+        this.vehicleObservers.add(observer);
     }
 
     public void notifyAllTripObservers() {
-        for (VehicleObserver o : observers) {
-            o.updateCurrentVehicle();
+        for (Observer<Vehicle> o : vehicleObservers) {
+            o.update(this);
 
         }
     }

@@ -4,7 +4,7 @@
     "EventType": "TRIP_STARTED",
     "PassengerID": "1",
     "VehicleType" : "BUS",
-    "VehicleID" : "123"
+    "VehicleID" : "BUS-1"
   },
   {
     "EventID": "E2",
@@ -15,7 +15,7 @@
     "EventID" : "E3",
     "EventType" : "VEHICLE_PASSED_STOP",
     "VehicleType" : "BUS",
-    "VehicleID" : "456"
+    "VehicleID" : "BUS-1"
   },
   {
    "EventID" : "E4",
@@ -26,7 +26,20 @@
     "EventID" : "E5",
     "EventType" : "VEHICLE_LEFT",
     "VehicleType" : "BUS"
+  },
+  {
+    "EventID": "E6",
+    "EventType" : "CARD_SWIPED",
+    "PassengerID" : "1",
+    "VehicleType" : "BUS",
+    "VehicleID" : "BUS-1"
+  },
+  {
+    "EventID": "E7",
+    "EventType": "ACCOUNT_ACTIVATED",
+    "PassengerID": "1"
   }
+
 
 
 
