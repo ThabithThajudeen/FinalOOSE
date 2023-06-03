@@ -1,5 +1,4 @@
 package com.startransport.states;
-
 import com.startransport.entities.Passenger;
 import com.startransport.entities.Trip;
 

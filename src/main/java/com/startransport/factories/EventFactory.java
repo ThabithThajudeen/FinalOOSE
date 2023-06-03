@@ -1,14 +1,19 @@
 
 
 package com.startransport.factories;
-
-
 import com.google.gson.JsonObject;
-
-
 import com.startransport.entities.VehicleType;
 import com.startransport.errors.UnknownEventException;
-import com.startransport.events.*;
+import com.startransport.events.AccountActivated;
+import com.startransport.events.CardSwiped;
+import com.startransport.events.Event;
+import com.startransport.events.TripStartedEvent;
+import com.startransport.events.TripStoppedEvent;
+import com.startransport.events.VehicleArrival;
+import com.startransport.events.VehicleCount;
+import com.startransport.events.VehicleLeft;
+import com.startransport.events.VehiclePassedStop;
+
 
 
 
@@ -47,7 +52,7 @@ public class EventFactory {
 
 
             // return event;
-        } else if (eventType.equals("VEHICLE_COUNT")) {
+        } else if (eventType.equals("VEHICLE_PASSED_STOP")) {
             String vehicleType = data.get("VehicleType").getAsString();
             String vehicleID = data.get("VehicleID").getAsString();
             VehicleType vehicleTypeEnum;
@@ -80,7 +85,11 @@ public class EventFactory {
          //   boolean isCardSwiped = true;
 
             event = new CardSwiped(passengerId);
-        } else {
+        }else if(eventType.equals("ACCOUNT_ACTIVATED")){
+            String passengerId = data.get("PassengerID").getAsString();
+            event = new AccountActivated(passengerId);
+        }
+        else {
             throw new UnknownEventException();
 
         }

@@ -52,21 +52,30 @@ public class TripStartedEvent extends Event {
     private String vehicleID;
     private int startStopCount;
 
+    public TripStartedEvent(String eventId, String passengerId, VehicleType vehicleType, String vehicleID) {
+        super(eventId);
+        this.passengerId = passengerId;
+        this.vehicleType = vehicleType;
+        this.vehicleID = vehicleID;
+        this.startStopCount = startStopCount;
+    }
+
+
     public String getPassengerId() {
         return passengerId;
     }
 
-//    public void setPassengerId(String passengerId) {
-//        this.passengerId = passengerId;
-//    }
-//
-//    public VehicleType getVehicleType() {
-//        return vehicleType;
-//    }
-//
-//    public void setVehicleType(VehicleType vehicleType) {
-//        this.vehicleType = vehicleType;
-//    }
+    public void setPassengerId(String passengerId) {
+        this.passengerId = passengerId;
+    }
+
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
 
     public String getVehicleID() {
         return vehicleID;
@@ -76,18 +85,6 @@ public class TripStartedEvent extends Event {
     public int getStartStopCount() {
         return startStopCount;
     }
-
-
-    public TripStartedEvent(String eventId, String passengerId, VehicleType vehicleType, String vehicleID) {
-        super(eventId);
-        this.passengerId = passengerId;
-        this.vehicleType = vehicleType;
-        this.vehicleID = vehicleID;
-        this.startStopCount = startStopCount;
-    }
-
-    // ... existing getters and setters ...
-
 
 
 }

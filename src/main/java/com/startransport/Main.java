@@ -1,15 +1,30 @@
 package com.startransport;
 
+import java.util.InputMismatchException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gson.*;
-import com.startransport.entities.*;
+
+import com.startransport.entities.Passenger;
+import com.startransport.entities.Trip;
+
+import com.startransport.entities.Vehicle;
+import com.startransport.entities.VehicleType;
 import com.startransport.errors.JsonProcessingException;
 import com.startransport.errors.UnknownEventException;
 import com.startransport.errors.UnknownEventProcessingException;
-import com.startransport.events.*;
+
+
+import com.startransport.events.CardSwiped;
+import com.startransport.events.Event;
+import com.startransport.events.TripStartedEvent;
+import com.startransport.events.TripStoppedEvent;
+import com.startransport.events.VehicleLeft;
+import com.startransport.events.VehiclePassedStop;
 import com.startransport.factories.EventFactory;
+import com.startransport.states.AccountState;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -20,24 +35,21 @@ import java.util.Scanner;
 public class Main {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
     private static final String TRIP_ID_PREFIX = "T-";
-    // private static final String TRAIN_ID_PREFIX = "TRAIN-";
+    private static final String TRAIN_ID_PREFIX = "TRAIN-";
     private static final String BUS_ID_PREFIX = "BUS-";
-    //  private static final String PASSENGER_ID_PREFIX = "PASSENGER-";
-    // private static final String EVENT_ID_PREFIX = "EVENT-";
+
     private static int tripIdCount = 1;
-    //private static int eventIdCount = 1;
-     private static int busIdCount = 1;
-     //private static int trainIdCount = 1;
-     //private static int busCount = 1;
-    //private static int trainCount = 1;
+
+    private static int busIdCount = 1;
+    private static int trainIdCount = 1;
+
     static private EventFactory eventFactory = new EventFactory();
     private static Map<String, Passenger> passengers = new HashMap<>();
-    //private static Map<String, Bus> buses = new HashMap<>();
-    //private static Map<String, Train> trains = new HashMap<>();
+
     private static Map<String, Vehicle> vehicles = new HashMap<>();
 
     private static Map<String, Trip> trips = new HashMap<>();
-    //private static Map<String, Event> events = new HashMap<>();
+
 
     public static void main(String[] args) throws UnknownEventException, InterruptedException {
         System.out.println("hii");
@@ -63,6 +75,7 @@ public class Main {
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "An exception occurred while loading passengers", e);
+
             throw new UnknownEventException();
         }
         LOGGER.log(Level.INFO, "Application ended");
@@ -76,14 +89,12 @@ public class Main {
             while (scanner.hasNextLine()) {
                 String[] data = scanner.nextLine().split(",");
 
-                // Assuming the first field is busID and the second field is passengerID
-               // String busID = data[0];
-              //  String passengerID = data[1];
+
                 int totalSeatCount = Integer.parseInt(data[1]);
 
 
                 // Create a new bus with the read bus ID
-                Vehicle vehicle = new Vehicle(BUS_ID_PREFIX + (busIdCount++) ,totalSeatCount,totalSeatCount,VehicleType.BUS);
+                Vehicle vehicle = new Vehicle(BUS_ID_PREFIX + (busIdCount++), totalSeatCount, totalSeatCount, VehicleType.BUS);
                 vehicles.put(vehicle.getVehicleID(), vehicle);
 
             }
@@ -92,6 +103,7 @@ public class Main {
             LOGGER.log(Level.SEVERE, "An exception occurred while loading buses", e);
             throw new UnknownEventException();
         }
+
 
         LOGGER.log(Level.INFO, "bus reading and loaded ended");
         System.out.println("Hii04");
@@ -110,7 +122,7 @@ public class Main {
 
 
                 // Create a new bus with the read bus ID
-                Vehicle vehicle = new Vehicle(BUS_ID_PREFIX + (busIdCount++) ,totalSeatCount,totalSeatCount,VehicleType.TRAINS);
+                Vehicle vehicle = new Vehicle(TRAIN_ID_PREFIX + (trainIdCount++), totalSeatCount, totalSeatCount, VehicleType.TRAINS);
                 vehicles.put(vehicle.getVehicleID(), vehicle);
 
             }
@@ -147,19 +159,17 @@ public class Main {
                     Trip trip = passenger.getCurrentTrip();
                     trip.setTimeEnd(LocalDateTime.now());
                     trip.setOngoing(false);
-                }
-                else if (event instanceof VehiclePassedStop) {
+                } else if (event instanceof VehiclePassedStop) {
                     VehiclePassedStop v1 = (VehiclePassedStop) event;
-                    //  Passenger passenger = passengers.get(v1.getPassengerID());
-                //    Trip trip = trips.get(v1.getPassengerID());
+
                     Vehicle v = vehicles.get(v1.getVehicleID());
                     if (v != null) {
-                        //v.attachObserver(trip);
+
                         v.incrementStopCount();
-                        //trip.setInitialStopCount(v.getCurrentStopCount());
+
                     }
 
-                }else if (event instanceof VehicleLeft) {
+                } else if (event instanceof VehicleLeft) {
                     VehicleLeft v2 = (VehicleLeft) event;
                     Vehicle v = vehicles.get(v2.getVehicleID());
                     if (v != null) {
@@ -170,8 +180,7 @@ public class Main {
                         }
                     }
 
-                }
-                if (event instanceof CardSwiped) {
+                } else if (event instanceof CardSwiped) {
                     CardSwiped e1 = (CardSwiped) event;
                     Passenger passenger = passengers.get(e1.getPassengerId());
 
@@ -202,74 +211,78 @@ public class Main {
                 System.out.println("4. Get the train information");
                 System.out.println("5. Get the Account Status");
                 System.out.println("6. Exit");
-                int option = scanner.nextInt();
-                scanner.nextLine();
-                //passenger info,-> passengerr account info -> total payable,
-                //passenger information also passenger current information
-                switch (option) {
-                    case 1:
-                        System.out.println("The bus count is: " + vehicles.values()
-                                .stream().filter(v -> v.getVehicleType() == VehicleType.BUS).count());
-                        break;
-                    case 2:
-                        System.out.println("The train count is: " + vehicles.values()
-                                .stream().filter(v -> v.getVehicleType() == VehicleType.TRAINS).count());
-                        break;
-                    case 3:
-                        System.out.println(" Enter bus ID to get bus information: ");
-                        String busID = scanner.nextLine().trim();
-                        Vehicle v = vehicles.get(busID);
-                        if (v != null) {
-                            System.out.println("Vehicle ID" + v.getVehicleID());
-                            System.out.println("Available Seat Count" + v.hasAvailableSeats());
-                            System.out.println("Total Seat Count" + v.getTotalSeatCount());
-                            System.out.println("Ongoing Trips Count" + v.getOngoingTripCount());
+                try {
+                    int option = scanner.nextInt();
+                    scanner.nextLine();
 
-                        } else {
-                            System.out.println("Bus not found for " + busID);
-                        }
-                        break;
-                    case 4:
-                        System.out.println(" Enter train ID to get bus information: ");
-                        String trainID = scanner.nextLine().trim();
-                        Vehicle v2 = vehicles.get(trainID);
-                        if (v2 != null) {
-                            System.out.println("Vehicle ID" + v2.getVehicleID());
-                            System.out.println("Available Seat Count" + v2.hasAvailableSeats());
-                            System.out.println("Total Seat Count" + v2.getTotalSeatCount());
-                            System.out.println("Ongoing Trips Count" + v2.getOngoingTripCount());
+                    switch (option) {
+                        case 1:
+                            System.out.println("The bus count is: " + vehicles.values()
+                                    .stream().filter(v -> v.getVehicleType() == VehicleType.BUS).count());
+                            break;
+                        case 2:
+                            System.out.println("The train count is: " + vehicles.values()
+                                    .stream().filter(v -> v.getVehicleType() == VehicleType.TRAINS).count());
+                            break;
+                        case 3:
+                            System.out.println(" Enter bus ID to get bus information: ");
+                            String busID = scanner.nextLine().trim();
+                            Vehicle v = vehicles.get(busID);
+                            if (v != null) {
+                                System.out.println("Vehicle ID" + v.getVehicleID());
+                                System.out.println("Available Seat Count" + v.hasAvailableSeats());
+                                System.out.println("Total Seat Count" + v.getTotalSeatCount());
+                                System.out.println("Ongoing Trips Count" + v.getOngoingTripCount());
 
-                        } else {
-                            System.out.println("Bus not found for " + trainID);
-                        }
-
-                        break;
-                    case 5:
-                        System.out.println("Enter passenger ID to get information: ");
-                        String passengerID = scanner.nextLine().trim();
-                        Passenger passenger = passengers.get(passengerID);
-                        if (passenger != null) {
-                            System.out.println("Passenger ID: " + passenger.getPassengerID());
-                            System.out.println("Passenger Name: " + passenger.getPassengerName());
-                            Trip currentTrip = passenger.getCurrentTrip();
-                            if (currentTrip != null) {
-                                System.out.println("Current Trip ID: " + currentTrip.getTripId());
-                                double calculateFare = currentTrip.calculateFare();
-                                System.out.println("Total Payable Amount: " + calculateFare);
                             } else {
-                                System.out.println("No current trip for this passenger.");
+                                System.out.println("Bus not found for " + busID);
                             }
-                        } else {
-                            System.out.println("Passenger not found for ID: " + passengerID);
-                        }
+                            break;
+                        case 4:
+                            System.out.println(" Enter train ID to get bus information: ");
+                            String trainID = scanner.nextLine().trim();
+                            Vehicle v2 = vehicles.get(trainID);
+                            if (v2 != null) {
+                                System.out.println("Vehicle ID" + v2.getVehicleID());
+                                System.out.println("Available Seat Count" + v2.hasAvailableSeats());
+                                System.out.println("Total Seat Count" + v2.getTotalSeatCount());
+                                System.out.println("Ongoing Trips Count" + v2.getOngoingTripCount());
+
+                            } else {
+                                System.out.println("Train not found for " + trainID);
+                            }
+
+                            break;
+                        case 5:
+                            System.out.println("Enter passenger ID to get information: ");
+                            String passengerID = scanner.nextLine().trim();
+                            Passenger passenger = passengers.get(passengerID);
+                            if (passenger != null) {
+                                System.out.println("Passenger ID: " + passenger.getPassengerID());
+                                System.out.println("Passenger Name: " + passenger.getPassengerName());
 
 
-                        break;
-                    case 6:
-                        exit = true;
-                        break;
-                    default:
-                        System.out.println("Invalid option, please try again.");
+                                double debt = passenger.getTotalPayable();
+                                System.out.println(debt);
+
+
+                            } else {
+                                System.out.println("Passenger not found for ID: " + passengerID);
+                            }
+
+
+                            break;
+
+                        case 6:
+                            exit = true;
+                            break;
+                        default:
+                            System.out.println("Invalid option, please try again.");
+                            break;
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input, please enter a number.");
+                    scanner.nextLine(); // Consume the invalid input
                 }
             }
         } catch (JsonProcessingException e2) {

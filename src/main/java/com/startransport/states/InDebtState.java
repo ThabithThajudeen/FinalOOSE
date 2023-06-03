@@ -1,9 +1,6 @@
 package com.startransport.states;
 import com.startransport.entities.Passenger;
 import com.startransport.entities.Trip;
-
-
-//import java.util.ArrayList;
 import java.util.List;
 
 public class InDebtState implements AccountState {
@@ -24,7 +21,7 @@ public class InDebtState implements AccountState {
         total += pastTrips.stream().filter(x -> !x.isPaid()).mapToDouble(Trip::getCurrentFair).sum();
         return total;
 
-        //  currentTrip.getCurrentFair();
+
 
     }
 

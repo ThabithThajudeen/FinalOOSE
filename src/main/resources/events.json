@@ -34,12 +34,29 @@
     "VehicleType" : "BUS",
     "VehicleID" : "BUS-1"
   },
+
   {
     "EventID": "E7",
     "EventType": "ACCOUNT_ACTIVATED",
     "PassengerID": "1"
+  },{
+  "EventID": "E8",
+  "EventType": "TRIP_STARTED",
+  "PassengerID": "2",
+  "VehicleType" : "BUS",
+  "VehicleID" : "BUS-1"
+},
+  {
+    "EventID" : "E9",
+    "EventType" : "VEHICLE_PASSED_STOP",
+    "VehicleType" : "BUS",
+    "VehicleID" : "BUS-1"
+  },
+  {
+    "EventID": "E10",
+    "EventType": "TRIP_STOPPED",
+    "PassengerID": "2"
   }
-
 
 
 
