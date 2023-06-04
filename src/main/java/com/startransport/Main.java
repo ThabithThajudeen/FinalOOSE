@@ -23,7 +23,7 @@ import com.startransport.events.TripStoppedEvent;
 import com.startransport.events.VehicleLeft;
 import com.startransport.events.VehiclePassedStop;
 import com.startransport.factories.EventFactory;
-import com.startransport.states.AccountState;
+//import com.startransport.states.AccountState;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -31,7 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-
+@SuppressWarnings("PMD.PreserveStackTrace")
+//The original stack trace is not useful-> the stack trace of the original exception doesn't provide useful debugging information.
+//I'm throwing a more specific exception
 public class Main {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
     private static final String TRIP_ID_PREFIX = "T-";
@@ -229,13 +231,13 @@ public class Main {
                             String busID = scanner.nextLine().trim();
                             Vehicle v = vehicles.get(busID);
                             if (v != null) {
-                                System.out.println("Vehicle ID" + v.getVehicleID());
-                                System.out.println("Available Seat Count" + v.hasAvailableSeats());
-                                System.out.println("Total Seat Count" + v.getTotalSeatCount());
-                                System.out.println("Ongoing Trips Count" + v.getOngoingTripCount());
+                                System.out.println("Vehicle ID" + " " + v.getVehicleID());
+                                System.out.println("Available Seat Count" + " " + v.hasAvailableSeats());
+                                System.out.println("Total Seat Count" +  " " + v.getTotalSeatCount());
+                                System.out.println("Ongoing Trips Count" + " " + v.getOngoingTripCount());
 
                             } else {
-                                System.out.println("Bus not found for " + busID);
+                                System.out.println("Bus not found for " + " " + busID);
                             }
                             break;
                         case 4:
@@ -243,13 +245,13 @@ public class Main {
                             String trainID = scanner.nextLine().trim();
                             Vehicle v2 = vehicles.get(trainID);
                             if (v2 != null) {
-                                System.out.println("Vehicle ID" + v2.getVehicleID());
-                                System.out.println("Available Seat Count" + v2.hasAvailableSeats());
-                                System.out.println("Total Seat Count" + v2.getTotalSeatCount());
-                                System.out.println("Ongoing Trips Count" + v2.getOngoingTripCount());
+                                System.out.println("Vehicle ID" + " " +v2.getVehicleID());
+                                System.out.println("Available Seat Count" + " " + v2.hasAvailableSeats());
+                                System.out.println("Total Seat Count" + " " + v2.getTotalSeatCount());
+                                System.out.println("Ongoing Trips Count" + " " + v2.getOngoingTripCount());
 
                             } else {
-                                System.out.println("Train not found for " + trainID);
+                                System.out.println("Train not found for " + " " + trainID);
                             }
 
                             break;
@@ -258,8 +260,8 @@ public class Main {
                             String passengerID = scanner.nextLine().trim();
                             Passenger passenger = passengers.get(passengerID);
                             if (passenger != null) {
-                                System.out.println("Passenger ID: " + passenger.getPassengerID());
-                                System.out.println("Passenger Name: " + passenger.getPassengerName());
+                                System.out.println("Passenger ID: " + " " + passenger.getPassengerID());
+                                System.out.println("Passenger Name: " + " " + passenger.getPassengerName());
 
 
                                 double debt = passenger.getTotalPayable();
@@ -267,7 +269,7 @@ public class Main {
 
 
                             } else {
-                                System.out.println("Passenger not found for ID: " + passengerID);
+                                System.out.println("Passenger not found for ID: " + " " + passengerID);
                             }
 
 

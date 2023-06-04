@@ -66,6 +66,9 @@ public class Passenger implements Observer<Trip> {
     }
 
     @Override
+    // below a more verbose or "clear" version of the code is actually be harder to understand due to the sheer volume of code.
+    // so in this case a compact ternary operation is more readable despite being technically more complex
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void update(Trip trip) {
         // Check if the trip has ended
         if (!trip.isOngoing()) {
